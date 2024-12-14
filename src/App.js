@@ -71,21 +71,21 @@ const AdvancedHealthDashboard = () => {
 
         // Add notifications if thresholds are crossed
         if (metricsConfig.heartRate.threshold(newData.heartRate) === 'Abnormal') {
-          setNotifications(prev => [...prev, Heart Rate abnormal at ${newData.timestamp}]);
+          setNotifications(prev => [...prev, `Heart Rate abnormal at ${newData.timestamp}`]);
         }
         if (metricsConfig.bloodPressure.threshold(newData.systolic, newData.diastolic) === 'Abnormal') {
-          setNotifications(prev => [...prev, Blood Pressure abnormal at ${newData.timestamp}]);
+          setNotifications(prev => [...prev, `Blood Pressure abnormal at ${newData.timestamp}`]);
         }
         if (metricsConfig.oxygenSaturation.threshold(newData.oxygenSaturation) === 'Abnormal') {
-          setNotifications(prev => [...prev, Oxygen Saturation abnormal at ${newData.timestamp}]);
+          setNotifications(prev => [...prev, `Oxygen Saturation abnormal at ${newData.timestamp}`]);
         }
 
         // Check for goal achievements
         if (newData.steps >= goals.steps) {
-          setGoalAchievements(prev => [...prev, Step goal achieved at ${newData.timestamp}]);
+          setGoalAchievements(prev => [...prev, `Step goal achieved at ${newData.timestamp}`]);
         }
         if (newData.heartRate === goals.heartRate) {
-          setGoalAchievements(prev => [...prev, Heart rate goal achieved at ${newData.timestamp}]);
+          setGoalAchievements(prev => [...prev, `Heart rate goal achieved at ${newData.timestamp}`]);
         }
 
         return updatedData;
@@ -106,7 +106,7 @@ const AdvancedHealthDashboard = () => {
           label: config.label,
           data: dataPoints,
           borderColor: config.color,
-          backgroundColor: ${config.color}33,
+          backgroundColor: `${config.color}33`,
           tension: 0.3
         }
       ]
@@ -119,9 +119,9 @@ const AdvancedHealthDashboard = () => {
 
     const getValue = () => {
       if (metric === 'bloodPressure') {
-        return ${latestData.systolic || 'N/A'}/${latestData.diastolic || 'N/A'} ${config.unit};
+        return `${latestData.systolic || 'N/A'}/${latestData.diastolic || 'N/A'} ${config.unit}`;
       }
-      return ${latestData[metric] || 'N/A'} ${config.unit};
+      return `${latestData[metric] || 'N/A'} ${config.unit}`;
     };
 
     return (
@@ -133,7 +133,7 @@ const AdvancedHealthDashboard = () => {
   };
 
   return (
-    <div className={dashboard-container ${darkMode ? 'dark-mode' : ''}}>
+    <div className={`dashboard-container ${darkMode ? 'dark-mode' : ''}`}>
       <h1>Advanced Health Monitoring Dashboard</h1>
 
       <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
@@ -150,7 +150,7 @@ const AdvancedHealthDashboard = () => {
             {Object.keys(metricsConfig).map(metric => (
               <button
                 key={metric}
-                className={metric-button ${activeMetric === metric ? 'active' : ''}}
+                className={`metric-button ${activeMetric === metric ? 'active' : ''}`}
                 onClick={() => setActiveMetric(metric)}
               >
                 {metricsConfig[metric].label}
@@ -200,4 +200,4 @@ const AdvancedHealthDashboard = () => {
   );
 };
 
-export default AdvancedHealthDashboard; 
+export default AdvancedHealthDashboard;
