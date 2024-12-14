@@ -51,47 +51,51 @@ const AdvancedHealthDashboard = () => {
     steps: 'Aim for 10,000 steps daily to stay fit and active.'
   };
 
-  const connectDevice = () => {
-    setDeviceConnected(true);
-    const generateMockData = () => {
-      const newData = {
-        timestamp: new Date().toLocaleTimeString(),
-        heartRate: Math.floor(Math.random() * 41) + 60,
-        systolic: Math.floor(Math.random() * 31) + 110,
-        diastolic: Math.floor(Math.random() * 21) + 70,
-        oxygenSaturation: Math.floor(Math.random() * 6) + 95,
-        steps: Math.floor(Math.random() * 300) + 500
-      };
-
-      setHealthData(prevData => {
-        const updatedData = {};
-        Object.keys(prevData).forEach(key => {
-          updatedData[key] = [...(prevData[key].slice(-20)), newData];
-        });
-
-        // Add notifications if thresholds are crossed
-        if (metricsConfig.heartRate.threshold(newData.heartRate) === 'Abnormal') {
-          setNotifications(prev => [...prev, `Heart Rate abnormal at ${newData.timestamp}`]);
-        }
-        if (metricsConfig.bloodPressure.threshold(newData.systolic, newData.diastolic) === 'Abnormal') {
-          setNotifications(prev => [...prev, `Blood Pressure abnormal at ${newData.timestamp}`]);
-        }
-        if (metricsConfig.oxygenSaturation.threshold(newData.oxygenSaturation) === 'Abnormal') {
-          setNotifications(prev => [...prev, `Oxygen Saturation abnormal at ${newData.timestamp}`]);
-        }
-
-        // Check for goal achievements
-        if (newData.steps >= goals.steps) {
-          setGoalAchievements(prev => [...prev, `Step goal achieved at ${newData.timestamp}`]);
-        }
-        if (newData.heartRate === goals.heartRate) {
-          setGoalAchievements(prev => [...prev, `Heart rate goal achieved at ${newData.timestamp}`]);
-        }
-
-        return updatedData;
+  const connectDevice = async () => {
+    try {
+      // Request the Bluetooth device that offers heart rate service
+      const device = await navigator.bluetooth.requestDevice({
+        filters: [{ services: ['heart_rate'] }]  // Filter for heart rate service
       });
-    };
-    setInterval(generateMockData, 3000);
+
+      // Connect to the device
+      const server = await device.gatt.connect();
+      const service = await server.getPrimaryService('heart_rate'); // Access the heart rate service
+      const characteristic = await service.getCharacteristic('heart_rate_measurement');
+
+      // Start receiving notifications from the heart rate characteristic
+      characteristic.startNotifications();
+      characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
+
+      setDeviceConnected(true);
+      console.log('Device connected successfully');
+    } catch (error) {
+      console.error('Failed to connect to device:', error);
+      setDeviceConnected(false);
+    }
+  };
+
+  // Function to handle data received from the Bluetooth device
+  const handleCharacteristicValueChanged = (event) => {
+    const value = event.target.value;
+    const heartRate = value.getUint8(1); // Assuming heart rate is the second byte in the data
+
+    // Update the health data with the new heart rate value
+    setHealthData(prevData => {
+      const newHeartRateData = {
+        timestamp: new Date().toLocaleTimeString(),
+        heartRate,
+      };
+      return {
+        ...prevData,
+        heartRate: [...prevData.heartRate, newHeartRateData]
+      };
+    });
+
+    // Notify user if the heart rate is abnormal
+    if (heartRate < 60 || heartRate > 100) {
+      setNotifications(prev => [...prev, `Heart rate abnormal at ${new Date().toLocaleTimeString()}`]);
+    }
   };
 
   const getChartData = metric => {
