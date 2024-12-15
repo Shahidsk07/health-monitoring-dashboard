@@ -27,7 +27,7 @@ body {
   text-align: center;
   margin-bottom: 20px;
   font-size: 2.5em;
-  color: #4caf50;
+  color: #0884b1;
 }
 
 /* Dark Mode Toggle Button */
@@ -35,7 +35,7 @@ body {
   display: block;
   margin: 10px auto;
   padding: 10px 20px;
-  background: #4caf50;
+  background: #286cb9;
   color: white;
   border: none;
   border-radius: 5px;
@@ -45,7 +45,7 @@ body {
 }
 
 .dark-mode-toggle:hover {
-  background: #45a049;
+  background: #0a0a0a;
 }
 
 .dark-mode .dark-mode-toggle {
@@ -54,7 +54,7 @@ body {
 }
 
 .dark-mode .dark-mode-toggle:hover {
-  background: #ff8c00;
+  background: #f3f2f0;
 }
 
 /* Connect Button */
@@ -72,7 +72,7 @@ body {
 }
 
 .connect-button:hover {
-  background: #0056b3;
+  background: #3ebd40;
 }
 
 /* Metric Selector */
@@ -85,7 +85,7 @@ body {
 .metric-button {
   margin: 0 10px;
   padding: 10px 20px;
-  border: 2px solid #4caf50;
+  border: 2px solid #4caf4f;
   border-radius: 5px;
   background: white;
   color: #4caf50;
@@ -95,7 +95,7 @@ body {
 }
 
 .metric-button:hover {
-  background: #4caf50;
+  background: #090909;
   color: white;
 }
 
